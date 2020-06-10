@@ -1,0 +1,21 @@
+{
+  "name": "section-04-improved-development-workflow-and-debugging",
+  "version": "1.0.0",
+  "description": "Section 04 - Improved Development Workflow and Debugging",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "start-server": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShranalK/Node.JS-The-Complete-Guide.git"
+  },
+  "author": "Shranal Kumar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShranalK/Node.JS-The-Complete-Guide/issues"
+  },
+  "homepage": "https://github.com/ShranalK/Node.JS-The-Complete-Guide#readme"
+}
