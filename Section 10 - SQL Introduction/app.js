@@ -2,13 +2,19 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 
-const db = require('./utils/database');
+const db = require("./utils/database");
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const notFound = require("./routes/not-found");
 
-db.execute('SELECT * FROM products');
+db.execute("SELECT * FROM products")
+  .then((result) => {
+    console.log(result[0], result[1]);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 const app = express();
 
