@@ -8,14 +8,6 @@ const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const notFound = require("./routes/not-found");
 
-db.execute("SELECT * FROM products")
-  .then((result) => {
-    console.log(result[0], result[1]);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
-
 const app = express();
 
 app.set("view engine", "ejs");
