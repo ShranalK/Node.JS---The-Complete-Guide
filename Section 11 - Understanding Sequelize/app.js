@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 
-const db = require("./utils/database");
+const sequelize = require("./utils/database");
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
@@ -20,4 +20,11 @@ app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(notFound);
 
-app.listen(3000);
+sequelize
+  .sync()
+  .then((result) => {
+    app.listen(3000);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
