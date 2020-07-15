@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const path = require("path");
 
 const sequelize = require("./utils/database");
+const Product = require("./models/product");
+const User = require("./models/user");
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
@@ -20,8 +22,11 @@ app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(notFound);
 
+Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
+User.hasMany(Product);
+
 sequelize
-  .sync()
+  .sync({ force: true })
   .then((result) => {
     app.listen(3000);
   })
