@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 
-// const adminRoutes = require("./routes/admin");
+const adminRoutes = require("./routes/admin");
 // const shopRoutes = require("./routes/shop");
 // const notFound = require("./routes/not-found");
 
@@ -27,7 +27,7 @@ app.use((req, res, next) => {
   //   });
 });
 
-// app.use("/admin", adminRoutes);
+app.use("/admin", adminRoutes);
 // app.use(shopRoutes);
 // app.use(notFound);
 
