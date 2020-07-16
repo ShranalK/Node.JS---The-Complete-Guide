@@ -6,7 +6,7 @@ const adminRoutes = require("./routes/admin");
 // const shopRoutes = require("./routes/shop");
 // const notFound = require("./routes/not-found");
 
-const mongoConnect = require("./utils/database");
+const mongoConnect = require("./utils/database").mongoConnect;
 
 const app = express();
 
@@ -25,6 +25,7 @@ app.use((req, res, next) => {
   //   .catch((err) => {
   //     console.log(err);
   //   });
+  next();
 });
 
 app.use("/admin", adminRoutes);
