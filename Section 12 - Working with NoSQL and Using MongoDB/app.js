@@ -4,7 +4,7 @@ const path = require("path");
 
 const adminRoutes = require("./routes/admin");
 // const shopRoutes = require("./routes/shop");
-// const notFound = require("./routes/not-found");
+const notFound = require("./routes/not-found");
 
 const mongoConnect = require("./utils/database").mongoConnect;
 
@@ -30,7 +30,7 @@ app.use((req, res, next) => {
 
 app.use("/admin", adminRoutes);
 // app.use(shopRoutes);
-// app.use(notFound);
+app.use(notFound);
 
 mongoConnect(() => {
   app.listen(3000);
