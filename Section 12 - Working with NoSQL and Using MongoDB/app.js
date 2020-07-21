@@ -7,7 +7,7 @@ const shopRoutes = require("./routes/shop");
 const notFound = require("./routes/not-found");
 
 const mongoConnect = require("./utils/database").mongoConnect;
-const user = require("./models/user");
+const User = require("./models/user");
 
 const app = express();
 
@@ -18,9 +18,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
-  user.findById("5f10faa21ba123be773dacee")
+  User.findById("5f10faa21ba123be773dacee")
     .then((user) => {
-      req.user = user;
+      req.user = new User(user.name, user.email, user.cart, user._id);
       next();
     })
     .catch((err) => {
