@@ -3,7 +3,6 @@ const Product = require("../models/product");
 exports.getProducts = (req, res, next) => {
   Product.find()
     .then((products) => {
-      console.log(products);
       res.render("shop/product-list", {
         prods: products,
         path: "/products",
@@ -44,8 +43,10 @@ exports.getIndex = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
   req.user
-    .getCart()
-    .then((products) => {
+    .populate("cart.items.productId")
+    .execPopulate()
+    .then((user) => {
+      const products = user.cart.items;
       res.render("shop/cart", {
         path: "/cart",
         pageTitle: "Your Cart",
@@ -64,7 +65,6 @@ exports.postCart = (req, res, next) => {
       return req.user.addToCart(product);
     })
     .then((result) => {
-      console.log("result");
       res.redirect("/cart");
     });
 };
@@ -97,7 +97,6 @@ exports.getOrders = (req, res, next) => {
   req.user
     .getOrders()
     .then((orders) => {
-      console.log(orders);
       res.render("shop/orders", {
         path: "/orders",
         pageTitle: "Your Orders",
