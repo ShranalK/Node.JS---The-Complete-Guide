@@ -65,69 +65,6 @@ userSchema.methods.clearCart = function () {
 
 module.exports = mongoose.model("User", userSchema);
 
-// const mongodb = require("mongodb");
-// const getDb = require("../utils/database").getDb;
-
-// const ObjectId = mongodb.ObjectId;
-
-// class User {
-//   constructor(username, email, cart, id) {
-//     this.name = username;
-//     this.email = email;
-//     this._id = id ? new mongodb.ObjectId(id) : null;
-//     this.cart = cart;
-//   }
-
-//   save() {
-//     const db = getDb();
-//     return db.collections("users").insertOne(this);
-//   }
-
-//   getCart() {
-//     const db = getDb();
-//     const productIds = this.cart.items.map((i) => {
-//       return i.productId;
-//     });
-//     return db
-//       .collection("products")
-//       .find({ _id: { $in: productIds } })
-//       .toArray()
-//       .then((products) => {
-//         return products.map((p) => {
-//           return {
-//             ...p,
-//             quantity: this.cart.items.find((i) => {
-//               return i.productId.toString() === p._id.toString();
-//             }).quantity,
-//           };
-//         });
-//       });
-//   }
-//   }
-
-//   addOrder() {
-//     const db = getDb();
-//     return this.getCart()
-//       .then((products) => {
-//         const order = {
-//           items: products,
-//           user: {
-//             _id: new ObjectId(this._id),
-//             name: this.name,
-//           },
-//         };
-//         return db.collection("orders").insertOne(order);
-//       })
-//       .then((result) => {
-//         this.cart = { items: [] };
-//         return db
-//           .collection("users")
-//           .updateOne(
-//             { _id: new ObjectId(this._id) },
-//             { $set: { cart: { items: [] } } }
-//           );
-//       });
-//   }
 
 //   getOrders() {
 //     const db = getDb();
