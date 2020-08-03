@@ -142,7 +142,6 @@ exports.getReset = (req, res, next) => {
 };
 
 exports.postReset = (req, res, next) => {
-  console.log("PASSWORD RESET");
   crypto.randomBytes(32, (err, buffer) => {
     if (err) {
       console.log(err);
@@ -152,7 +151,6 @@ exports.postReset = (req, res, next) => {
     const token = buffer.toString("hex");
     User.findOne({ email: req.body.email })
       .then((user) => {
-        console.log("USER FOUND");
         if (!user) {
           req.flash("error", "No account with that email found");
           return res.redirect("/reset");
@@ -163,9 +161,7 @@ exports.postReset = (req, res, next) => {
         return user.save();
       })
       .then((result) => {
-        console.log("USER SAVED");
         res.redirect("/");
-        console.log("REDIRECTED");
         sendGridMail.send({
           to: req.body.email,
           from: "cryptic190394@gmail.com",
@@ -175,7 +171,6 @@ exports.postReset = (req, res, next) => {
             <p>Click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password.</p>
           `,
         });
-        console.log("EMAIL SENT TO: ", req.body.email);
       })
       .catch((err) => {
         console.log(err);
@@ -199,7 +194,37 @@ exports.getNewPassword = (req, res, next) => {
         pageTitle: "New Password",
         errorMessage: message,
         userId: user._id.toString(),
+        passwordToken: token,
       });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+exports.postNewPassword = (req, res, next) => {
+  const newPassword = req.body.password;
+  const userId = req.body.userId;
+  const token = req.body.passwordToken;
+  let resetUser;
+
+  User.findOne({
+    resetToken: token,
+    resetTokenExpiration: { $gt: Date.now() },
+    _id: userId,
+  })
+    .then((user) => {
+      resetUser = user;
+      return bcrypt.hash(newPassword, 12);
+    })
+    .then((hashedPassword) => {
+      resetUser.password = hashedPassword;
+      resetUser.resetToken = undefined;
+      resetUser.resetTokenExpiration = undefined;
+      return resetUser.save();
+    })
+    .then((result) => {
+      res.redirect("/login");
     })
     .catch((err) => {
       console.log(err);
