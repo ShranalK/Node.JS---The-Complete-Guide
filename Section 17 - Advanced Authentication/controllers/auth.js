@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
+const sendGridMail = require("@sendgrid/mail");
 const nodemailer = require("nodemailer");
 const sendgridTransport = require("nodemailer-sendgrid-transport");
 const User = require("../models/user");
@@ -11,6 +12,10 @@ const transporter = nodemailer.createTransport(
         "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",
     },
   })
+);
+
+sendGridMail.setApiKey(
+  "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"
 );
 
 exports.getLogin = (req, res, next) => {
@@ -99,12 +104,18 @@ exports.postSignup = (req, res, next) => {
         })
         .then((result) => {
           res.redirect("/login");
-          return transporter.sendMail({
+          return sendGridMail.send({
             to: email,
             from: "cryptic190394@gmail.com",
             subject: "Signup succeeded!",
             html: "<h1>You successfully signed up</h1>",
           });
+          // return transporter.sendMail({
+          //   to: email,
+          //   from: "cryptic190394@gmail.com",
+          //   subject: "Signup succeeded!",
+          //   html: "<h1>You successfully signed up</h1>",
+          // });
         })
         .catch((err) => {
           console.log(err);
@@ -137,6 +148,7 @@ exports.getReset = (req, res, next) => {
 };
 
 exports.postReset = (req, res, next) => {
+  console.log("PASSWORD RESET");
   crypto.randomBytes(32, (err, buffer) => {
     if (err) {
       console.log(err);
@@ -146,6 +158,7 @@ exports.postReset = (req, res, next) => {
     const token = buffer.toString("hex");
     User.findOne({ email: req.body.email })
       .then((user) => {
+        console.log("USER FOUND");
         if (!user) {
           req.flash("error", "No account with that email found");
           return res.redirect("/reset");
@@ -156,8 +169,10 @@ exports.postReset = (req, res, next) => {
         return user.save();
       })
       .then((result) => {
+        console.log("USER SAVED");
         res.redirect("/");
-        transporter.sendMail({
+        console.log("REDIRECTED");
+        sendGridMail.send({
           to: req.body.email,
           from: "cryptic190394@gmail.com",
           subject: "Password reset",
@@ -166,6 +181,16 @@ exports.postReset = (req, res, next) => {
             <p>Click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password.</p>
           `,
         });
+        // transporter.sendMail({
+        //   to: req.body.email,
+        //   from: "shranal@hotmail.com",
+        //   subject: "Password reset",
+        //   html: `
+        //     <p>You requested a password reset</p>
+        //     <p>Click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password.</p>
+        //   `,
+        // });
+        console.log("EMAIL SENT TO: ", req.body.email);
       })
       .catch((err) => {
         console.log(err);
