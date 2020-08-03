@@ -110,12 +110,6 @@ exports.postSignup = (req, res, next) => {
             subject: "Signup succeeded!",
             html: "<h1>You successfully signed up</h1>",
           });
-          // return transporter.sendMail({
-          //   to: email,
-          //   from: "cryptic190394@gmail.com",
-          //   subject: "Signup succeeded!",
-          //   html: "<h1>You successfully signed up</h1>",
-          // });
         })
         .catch((err) => {
           console.log(err);
@@ -181,19 +175,33 @@ exports.postReset = (req, res, next) => {
             <p>Click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password.</p>
           `,
         });
-        // transporter.sendMail({
-        //   to: req.body.email,
-        //   from: "shranal@hotmail.com",
-        //   subject: "Password reset",
-        //   html: `
-        //     <p>You requested a password reset</p>
-        //     <p>Click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password.</p>
-        //   `,
-        // });
         console.log("EMAIL SENT TO: ", req.body.email);
       })
       .catch((err) => {
         console.log(err);
       });
   });
+};
+
+exports.getNewPassword = (req, res, next) => {
+  const token = req.params.token;
+  User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } })
+    .then((user) => {
+      let message = req.flash("error");
+      if (message.length > 0) {
+        message = message[0];
+      } else {
+        message = null;
+      }
+
+      res.render("auth/new-password", {
+        path: "/new-password",
+        pageTitle: "New Password",
+        errorMessage: message,
+        userId: user._id.toString(),
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
